@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Model Canvas | Labo Kodra</title>
+  <meta name="description" content="Cr&eacute;ez votre Business Model Canvas &eacute;tape par &eacute;tape. Guide interactif pour structurer votre mod&egrave;le d'affaires." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-card: #f8fafc;
+      --border: #e2e8f0;
+      --border-light: #f1f5f9;
+      --orange: #F97316;
+      --orange-hover: #EA580C;
+      --orange-light: rgba(249,115,22,0.08);
+      --orange-border: rgba(249,115,22,0.2);
+      --green: #22c55e;
+      --green-light: rgba(34,197,94,0.1);
+      --text: #1e293b;
+      --text2: #64748b;
+      --muted: #94a3b8;
+      --sidebar-w: 260px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* === Header === */
+    header { border-bottom: 1px solid var(--border); padding: 14px 24px; }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo-area { display: flex; align-items: center; gap: 12px; }
+    .logo-area img { height: 22px; opacity: 0.8; }
+    .divider { width: 1px; height: 18px; background: var(--border); }
+    .badge { font-family: monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.05em; }
+    .back-link {
+      font-family: monospace; font-size: 12px; color: var(--muted);
+      display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--orange); }
+    .back-link svg { width: 14px; height: 14px; }
+
+    /* === App Layout === */
+    .app-layout { display: flex; flex: 1; min-height: 0; }
+
+    /* === Sidebar === */
+    .sidebar {
+      width: var(--sidebar-w); min-width: var(--sidebar-w);
+      background: var(--bg-card); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; overflow-y: auto;
+    }
+    .sidebar-title {
+      font-family: monospace; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); padding: 20px 20px 12px;
+      font-weight: 600;
+    }
+    .sidebar-steps { flex: 1; }
+    .sb-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; cursor: pointer; transition: all 0.15s;
+      border-left: 3px solid transparent; font-size: 13px; color: var(--text2);
+    }
+    .sb-item:hover { background: var(--orange-light); color: var(--text); }
+    .sb-item.active {
+      background: var(--orange-light); border-left-color: var(--orange);
+      color: var(--text); font-weight: 600;
+    }
+    .sb-item.completed .sb-check { color: var(--green); }
+    .sb-num {
+      width: 22px; height: 22px; border-radius: 50%; font-family: monospace;
+      font-size: 11px; font-weight: 700; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+      background: var(--border-light); color: var(--muted);
+    }
+    .sb-item.active .sb-num { background: var(--orange); color: #fff; }
+    .sb-item.completed .sb-num { background: var(--green-light); color: var(--green); }
+    .sb-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sb-check { margin-left: auto; font-size: 14px; opacity: 0; transition: opacity 0.2s; }
+    .sb-item.completed .sb-check { opacity: 1; }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--border); padding: 12px 20px;
+    }
+    .sb-action {
+      display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+      border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500;
+      color: var(--text2); transition: all 0.15s;
+    }
+    .sb-action:hover { background: var(--orange-light); color: var(--orange); }
+    .sb-action svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* === Mobile sidebar toggle === */
+    .sidebar-toggle {
+      display: none; background: none; border: none; padding: 8px;
+      cursor: pointer; color: var(--text2);
+    }
+    .sidebar-toggle svg { width: 22px; height: 22px; }
+
+    /* === Main Content === */
+    .main-content { flex: 1; overflow-y: auto; padding: 28px 32px 64px; min-width: 0; }
+
+    /* === Step Layout === */
+    .step-content {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 28px; align-items: start;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    /* LEFT — Educational */
+    .step-left {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px;
+    }
+    .step-number {
+      display: inline-block; font-family: monospace; font-size: 11px;
+      color: var(--orange); background: var(--orange-light);
+      border-radius: 999px; padding: 4px 12px; margin-bottom: 14px;
+      font-weight: 600; letter-spacing: 0.05em;
+    }
+    .step-left h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
+    .step-intro { font-size: 0.9rem; color: var(--text2); line-height: 1.7; margin-bottom: 20px; }
+    .questions-box {
+      background: var(--orange-light); border-left: 3px solid var(--orange);
+      border-radius: 0 10px 10px 0; padding: 16px 20px; margin-bottom: 16px;
+    }
+    .questions-box h3 {
+      font-family: monospace; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--orange); margin-bottom: 10px; font-weight: 700;
+    }
+    .questions-box ul { list-style: none; }
+    .questions-box li {
+      font-size: 0.825rem; color: var(--text2); line-height: 1.6;
+      padding: 4px 0 4px 20px; position: relative;
+    }
+    .questions-box li::before {
+      content: '\2192'; position: absolute; left: 0; color: var(--orange); font-weight: 700;
+    }
+    .tips-box {
+      background: var(--green-light); border: 1px solid rgba(34,197,94,0.15);
+      border-radius: 10px; padding: 14px 18px;
+    }
+    .tips-box h3 {
+      font-family: monospace; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--green); margin-bottom: 6px; font-weight: 700;
+    }
+    .tips-box p { font-size: 0.825rem; color: var(--text2); line-height: 1.6; }
+
+    /* RIGHT — Form + AI */
+    .step-right { position: sticky; top: 0; }
+    .form-panel {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 24px;
+    }
+    .form-panel label {
+      display: block; font-size: 0.85rem; font-weight: 600;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .form-panel textarea {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 14px; color: var(--text);
+      font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.7;
+      resize: vertical; outline: none; transition: border-color 0.2s;
+      min-height: 160px;
+    }
+    .form-panel textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 3px var(--orange-light); }
+    .form-panel textarea::placeholder { color: var(--muted); }
+    .char-count {
+      font-family: monospace; font-size: 11px; color: var(--muted);
+      text-align: right; margin-top: 4px;
+    }
+
+    /* === AI Assistant === */
+    .ai-section {
+      margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .ai-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .ai-header span:first-child { font-size: 16px; }
+    .ai-header span:last-child {
+      font-family: monospace; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text2); font-weight: 600;
+    }
+    .ai-messages {
+      max-height: 220px; overflow-y: auto; margin-bottom: 10px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .ai-messages:empty::after {
+      content: 'Posez une question ou utilisez les boutons ci-dessous.';
+      font-size: 12px; color: var(--muted); font-style: italic; padding: 8px 0;
+    }
+    .ai-msg {
+      max-width: 88%; padding: 10px 14px; border-radius: 12px;
+      font-size: 13px; line-height: 1.6; word-break: break-word;
+    }
+    .ai-msg-user {
+      align-self: flex-end; background: var(--orange-light); color: var(--text);
+      border-bottom-right-radius: 4px;
+    }
+    .ai-msg-assistant {
+      align-self: flex-start; background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); border-bottom-left-radius: 4px;
+    }
+    .ai-msg-assistant p { margin: 0; }
+    .ai-msg-assistant p + p { margin-top: 8px; }
+    .ai-use-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-top: 8px; padding: 6px 12px; border-radius: 6px;
+      background: var(--orange); color: #fff; border: none;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: background 0.2s;
+    }
+    .ai-use-btn:hover { background: var(--orange-hover); }
+    .ai-typing {
+      align-self: flex-start; padding: 10px 16px; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 12px;
+      display: flex; gap: 4px;
+    }
+    .ai-typing span {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--muted);
+      animation: bounce 1.2s infinite;
+    }
+    .ai-typing span:nth-child(2) { animation-delay: 0.15s; }
+    .ai-typing span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+    .ai-input-row {
+      display: flex; gap: 8px; margin-bottom: 8px;
+    }
+    .ai-input-row input {
+      flex: 1; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 12px; font-size: 13px;
+      color: var(--text); outline: none; font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s;
+    }
+    .ai-input-row input:focus { border-color: var(--orange); }
+    .ai-input-row input::placeholder { color: var(--muted); }
+    .ai-input-row button {
+      background: var(--orange); color: #fff; border: none;
+      border-radius: 8px; padding: 8px 14px; font-size: 13px;
+      font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background 0.2s; white-space: nowrap;
+    }
+    .ai-input-row button:hover { background: var(--orange-hover); }
+    .ai-input-row button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .ai-quick-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ai-quick-btn {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 7px 14px; font-size: 12px; color: var(--text2);
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: all 0.15s; display: flex; align-items: center; gap: 5px;
+    }
+    .ai-quick-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .ai-quick-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* === Nav Buttons === */
+    .nav-buttons {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 24px;
+    }
+    .btn {
+      border: none; border-radius: 10px; padding: 10px 22px;
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    }
+    .btn-primary { background: var(--orange); color: #fff; }
+    .btn-primary:hover { background: var(--orange-hover); }
+    .btn-secondary { background: var(--bg-card); color: var(--text2); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn:disabled:hover { background: var(--bg-card); color: var(--text2); border-color: var(--border); }
+    .step-indicator { font-family: monospace; font-size: 12px; color: var(--muted); }
+    .step-indicator span { color: var(--orange); font-weight: 700; }
+
+    /* === Review Screen === */
+    .review-screen { display: none; }
+    .review-header { text-align: center; margin-bottom: 28px; }
+    .review-header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
+    .review-header h1 em { font-style: normal; color: var(--orange); }
+    .review-header p { font-size: 0.9rem; color: var(--text2); }
+
+    /* BMC Grid — Osterwalder */
+    .bmc-grid {
+      display: grid; grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: 1fr 1fr 0.8fr; gap: 8px; min-height: 480px;
+    }
+    .bmc-block {
+      background: var(--bg-card); border: 2px solid var(--border);
+      border-radius: 10px; padding: 14px; cursor: pointer;
+      transition: all 0.2s; overflow: hidden;
+    }
+    .bmc-block:hover { border-color: var(--orange); box-shadow: 0 4px 12px rgba(249,115,22,0.1); }
+    .bmc-block h3 {
+      font-family: monospace; font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--orange); margin-bottom: 8px;
+      font-weight: 700; white-space: nowrap;
+    }
+    .bmc-block .block-icon { font-size: 18px; margin-bottom: 6px; display: block; }
+    .bmc-block p { font-size: 0.75rem; color: var(--text2); line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+    .bmc-block .empty-hint { font-style: italic; color: var(--muted); font-size: 0.75rem; }
+    .bmc-block .edit-hint {
+      font-family: monospace; font-size: 10px; color: var(--muted);
+      margin-top: 8px; opacity: 0; transition: opacity 0.2s;
+    }
+    .bmc-block:hover .edit-hint { opacity: 1; }
+
+    .bmc-partenaires { grid-column: 1/3; grid-row: 1/3; }
+    .bmc-activites   { grid-column: 3/5; grid-row: 1/2; }
+    .bmc-ressources  { grid-column: 3/5; grid-row: 2/3; }
+    .bmc-proposition { grid-column: 5/7; grid-row: 1/3; }
+    .bmc-relations   { grid-column: 7/9; grid-row: 1/2; }
+    .bmc-canaux      { grid-column: 7/9; grid-row: 2/3; }
+    .bmc-segments    { grid-column: 9/11; grid-row: 1/3; }
+    .bmc-couts       { grid-column: 1/6; grid-row: 3/4; }
+    .bmc-revenus     { grid-column: 6/11; grid-row: 3/4; }
+
+    .export-actions { display: flex; justify-content: center; gap: 14px; margin-top: 28px; }
+
+    /* === Footer === */
+    footer { border-top: 1px solid var(--border); padding: 16px 24px; }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-inner p, .footer-links { font-family: monospace; font-size: 12px; color: var(--muted); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { transition: color 0.2s; }
+    .footer-links a:hover { color: var(--orange); }
+
+    /* === Responsive === */
+    @media (max-width: 1100px) {
+      .step-content { grid-template-columns: 1fr; }
+      .step-right { position: static; }
+    }
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .sidebar.open { display: flex; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
+      .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.2); z-index: 99; }
+      .sidebar-overlay.open { display: block; }
+      .sidebar-toggle { display: block; }
+      .bmc-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; min-height: auto; }
+      .bmc-partenaires,.bmc-activites,.bmc-ressources,
+      .bmc-proposition,.bmc-relations,.bmc-canaux,
+      .bmc-segments,.bmc-couts,.bmc-revenus { grid-column: auto; grid-row: auto; }
+      .bmc-couts,.bmc-revenus { grid-column: span 2; }
+    }
+    @media (max-width: 500px) {
+      .bmc-grid { grid-template-columns: 1fr; }
+      .bmc-couts,.bmc-revenus { grid-column: auto; }
+      .nav-buttons { flex-wrap: wrap; gap: 10px; }
+      .step-indicator { order: -1; width: 100%; text-align: center; }
+      .export-actions { flex-direction: column; align-items: stretch; }
+    }
+
+    /* === Print — Tabloid Landscape === */
+    @media print {
+      @page { size: tabloid landscape; margin: 0.5in; }
+      body { background: #fff; color: #000; }
+      header, footer, .sidebar, .sidebar-overlay, .app-layout > .sidebar,
+      .nav-buttons, .export-actions, .review-header p, .edit-hint,
+      .ai-section { display: none !important; }
+      .app-layout { display: block; }
+      .main-content { padding: 0; overflow: visible; }
+      .review-screen { display: block !important; }
+      .review-header { display: block !important; margin-bottom: 16pt; }
+      .review-header h1 { font-size: 22pt; color: #000; }
+      .review-header h1 em { color: var(--orange); }
+      .review-header p { display: none !important; }
+      .bmc-grid { gap: 6px; min-height: auto; height: calc(100vh - 1in - 40pt); }
+      .bmc-block { border: 1.5px solid #333; border-radius: 6px; padding: 10pt; background: #fff; }
+      .bmc-block:hover { border-color: #333; box-shadow: none; }
+      .bmc-block h3 { color: var(--orange); font-size: 8pt; margin-bottom: 6pt; }
+      .bmc-block p { color: #333; font-size: 8pt; line-height: 1.4; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-area">
+      <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Menu">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </button>
+      <img src="https://kodra.ca/logo.png" alt="Kodra" />
+      <div class="divider"></div>
+      <span class="badge">labo</span>
+    </div>
+    <a href="https://labo.kodra.ca" class="back-link">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
+      </svg>
+      Retour au labo
+    </a>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<div class="app-layout">
+  <!-- ========== SIDEBAR ========== -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-title">Business Model Canvas</div>
+    <div class="sidebar-steps" id="sidebar-steps"></div>
+    <div class="sidebar-footer">
+      <div class="sb-action" id="sb-canvas" title="Voir le canvas compl&eacute;t">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+        Voir le canvas
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <div class="main-content" id="main-content">
+    <!-- WIZARD -->
+    <div id="wizard">
+      <div id="step-content" class="step-content"></div>
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" id="btn-prev" disabled>
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+          Pr&eacute;c&eacute;dent
+        </button>
+        <div class="step-indicator">&Eacute;tape <span id="current-step">1</span> / 9</div>
+        <button class="btn btn-primary" id="btn-next">
+          Suivant
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- REVIEW SCREEN -->
+    <div class="review-screen" id="review-screen">
+      <div class="review-header">
+        <h1>Votre <em>Business Model Canvas</em></h1>
+        <p>Cliquez sur une section pour la modifier.</p>
+      </div>
+      <div class="bmc-grid" id="bmc-grid"></div>
+      <div class="export-actions">
+        <button class="btn btn-secondary" id="btn-back-wizard">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+          Modifier
+        </button>
+        <button class="btn btn-primary" id="btn-export">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Exporter en PDF (Tablo&iuml;d)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <p>&copy; 2026 Kodra Conseil, SENC</p>
+    <div class="footer-links">
+      <a href="https://kodra.ca">www.kodra.ca</a>
+      <span style="color:var(--border)">|</span>
+      <a href="mailto:seb@kodra.ca">seb@kodra.ca</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// Business Model Canvas — Wizard + AI Assistant
+// ============================================================
+
+const STEPS = [
+  {
+    key: 'segments', icon: '\u{1F465}', title: 'Segments de client\u00e8le', gridClass: 'bmc-segments',
+    intro: 'Les segments de client\u00e8le d\u00e9finissent les diff\u00e9rents groupes de personnes ou d\u2019organisations que votre entreprise cherche \u00e0 atteindre et \u00e0 servir. C\u2019est le point de d\u00e9part de tout mod\u00e8le d\u2019affaires\u00a0: sans client, pas de revenu.',
+    questions: ['Pour qui cr\u00e9ez-vous de la valeur\u00a0?','Qui sont vos clients les plus importants\u00a0?','Quels sont leurs besoins, comportements et caract\u00e9ristiques\u00a0?','Y a-t-il des segments que vous ne servez pas encore mais qui pourraient b\u00e9n\u00e9ficier de votre offre\u00a0?'],
+    tips: 'Soyez sp\u00e9cifique. \u00ab\u00a0PME manufacturi\u00e8res de 10-50 employ\u00e9s en Abitibi\u00a0\u00bb est bien meilleur que \u00ab\u00a0PME\u00a0\u00bb. Pensez en personas\u00a0: \u00e2ge, r\u00f4le, frustrations, objectifs.',
+    placeholder: 'Ex: PME manufacturi\u00e8res de 10-50 employ\u00e9s en r\u00e9gion...\n\nStartups technologiques en phase de croissance...'
+  },
+  {
+    key: 'proposition', icon: '\u{1F48E}', title: 'Proposition de valeur', gridClass: 'bmc-proposition',
+    intro: 'La proposition de valeur d\u00e9crit la combinaison de produits et services qui cr\u00e9e de la valeur pour un segment de client\u00e8le donn\u00e9. C\u2019est la raison pour laquelle les clients vous choisissent.',
+    questions: ['Quelle valeur apportez-vous \u00e0 vos clients\u00a0?','Quels probl\u00e8mes r\u00e9solvez-vous pour eux\u00a0?','Quels besoins satisfaites-vous\u00a0?','Qu\u2019est-ce qui vous diff\u00e9rencie de la concurrence\u00a0?'],
+    tips: 'Concentrez-vous sur les b\u00e9n\u00e9fices clients, pas sur vos caract\u00e9ristiques. Pensez\u00a0: nouveaut\u00e9, performance, personnalisation, r\u00e9duction de co\u00fbt, accessibilit\u00e9.',
+    placeholder: 'Ex: Accompagnement personnalis\u00e9 en transformation num\u00e9rique...\n\nFormation pratique adapt\u00e9e au contexte r\u00e9gional...'
+  },
+  {
+    key: 'canaux', icon: '\u{1F4E1}', title: 'Canaux', gridClass: 'bmc-canaux',
+    intro: 'Les canaux d\u00e9crivent comment votre entreprise communique avec ses segments de client\u00e8le et leur livre la proposition de valeur. Ils couvrent tout le parcours client.',
+    questions: ['Par quels canaux vos clients pr\u00e9f\u00e8rent-ils \u00eatre contact\u00e9s\u00a0?','Comment les atteignez-vous actuellement\u00a0?','Comment vos canaux sont-ils int\u00e9gr\u00e9s entre eux\u00a0?','Quels canaux fonctionnent le mieux\u00a0?'],
+    tips: 'Pensez \u00e0 tout le parcours\u00a0: d\u00e9couverte \u2192 \u00e9valuation \u2192 achat \u2192 livraison \u2192 apr\u00e8s-vente. Canaux directs vs indirects.',
+    placeholder: 'Ex: R\u00e9f\u00e9rences clients (60%), LinkedIn (25%), \u00e9v\u00e9nements (15%)...'
+  },
+  {
+    key: 'relations', icon: '\u{1F91D}', title: 'Relations clients', gridClass: 'bmc-relations',
+    intro: 'Ce bloc d\u00e9crit les types de relations que vous \u00e9tablissez avec chaque segment. Les relations vont de l\u2019accompagnement personnalis\u00e9 au libre-service automatis\u00e9.',
+    questions: ['Quel type de relation chaque segment attend-il\u00a0?','Comment acqu\u00e9rez-vous de nouveaux clients\u00a0?','Comment fid\u00e9lisez-vous vos clients existants\u00a0?','Comment d\u00e9veloppez-vous vos revenus par client\u00a0?'],
+    tips: '\u00c9quilibre entre personnalisation (co\u00fbteuse mais fid\u00e9lisante) et automatisation (scalable). Types\u00a0: assistance personnelle, self-service, communaut\u00e9, co-cr\u00e9ation.',
+    placeholder: 'Ex: Accompagnement 1:1 pour les mandats de conseil...\n\nCommunaut\u00e9 de pratique mensuelle...'
+  },
+  {
+    key: 'revenus', icon: '\u{1F4B0}', title: 'Flux de revenus', gridClass: 'bmc-revenus',
+    intro: 'Les flux de revenus repr\u00e9sentent l\u2019argent g\u00e9n\u00e9r\u00e9 aupr\u00e8s de chaque segment. Chaque flux peut avoir un m\u00e9canisme de prix diff\u00e9rent.',
+    questions: ['Pour quelle valeur vos clients sont-ils pr\u00eats \u00e0 payer\u00a0?','Combien paient-ils actuellement\u00a0?','Quel est votre mod\u00e8le de tarification\u00a0?','Quelle est la part de chaque source de revenus\u00a0?'],
+    tips: 'Diversifiez vos sources. Mod\u00e8les courants\u00a0: prix fixe, abonnement, usage, freemium, licence, commission.',
+    placeholder: 'Ex: Mandats de conseil (65%, 15-25k$/projet)...\n\nFormations (25%, 1 500$/jour)...'
+  },
+  {
+    key: 'ressources', icon: '\u{1F511}', title: 'Ressources cl\u00e9s', gridClass: 'bmc-ressources',
+    intro: 'Les ressources cl\u00e9s sont les actifs les plus importants n\u00e9cessaires au fonctionnement de votre mod\u00e8le d\u2019affaires.',
+    questions: ['Quelles ressources votre proposition de valeur requiert-elle\u00a0?','Quelles ressources vos canaux n\u00e9cessitent-ils\u00a0?','Quelles ressources sont les plus difficiles \u00e0 remplacer\u00a0?'],
+    tips: 'Cat\u00e9gories\u00a0: physiques (bureaux), intellectuelles (marque, brevets), humaines (comp\u00e9tences), financi\u00e8res.',
+    placeholder: 'Ex: \u00c9quipe de 3 consultants seniors...\n\nM\u00e9thodologie propri\u00e9taire...'
+  },
+  {
+    key: 'activites', icon: '\u2699\uFE0F', title: 'Activit\u00e9s cl\u00e9s', gridClass: 'bmc-activites',
+    intro: 'Les activit\u00e9s cl\u00e9s sont les actions les plus importantes pour que votre mod\u00e8le d\u2019affaires fonctionne.',
+    questions: ['Quelles activit\u00e9s votre proposition de valeur requiert-elle\u00a0?','Quelles activit\u00e9s pour vos canaux et relations\u00a0?','Quelles activit\u00e9s g\u00e9n\u00e8rent directement vos revenus\u00a0?'],
+    tips: 'Cat\u00e9gories\u00a0: production, r\u00e9solution de probl\u00e8mes, plateforme/r\u00e9seau. Focalisez sur ce qui cr\u00e9e de la valeur.',
+    placeholder: 'Ex: Diagnostic organisationnel...\n\nConception et facilitation d\u2019ateliers...'
+  },
+  {
+    key: 'partenaires', icon: '\u{1F517}', title: 'Partenaires cl\u00e9s', gridClass: 'bmc-partenaires',
+    intro: 'Les partenaires cl\u00e9s sont le r\u00e9seau de fournisseurs et partenaires qui contribuent au fonctionnement de votre mod\u00e8le.',
+    questions: ['Qui sont vos partenaires et fournisseurs cl\u00e9s\u00a0?','Quelles ressources obtenez-vous d\u2019eux\u00a0?','Quelles activit\u00e9s r\u00e9alisent-ils pour vous\u00a0?'],
+    tips: 'Types\u00a0: alliances strat\u00e9giques, coop\u00e9tition, coentreprises, relation fournisseur. Pensez \u00e0 ce que vous n\u2019avez pas besoin de faire vous-m\u00eame.',
+    placeholder: 'Ex: Sous-traitants sp\u00e9cialis\u00e9s...\n\nPartenaires strat\u00e9giques (CPA, avocats)...'
+  },
+  {
+    key: 'couts', icon: '\u{1F4CA}', title: 'Structure de co\u00fbts', gridClass: 'bmc-couts',
+    intro: 'La structure de co\u00fbts d\u00e9crit tous les co\u00fbts engendr\u00e9s par le fonctionnement de votre mod\u00e8le d\u2019affaires.',
+    questions: ['Quels sont les co\u00fbts les plus importants\u00a0?','Quelles ressources sont les plus co\u00fbteuses\u00a0?','Quelles activit\u00e9s sont les plus co\u00fbteuses\u00a0?','Mod\u00e8le orient\u00e9 co\u00fbts ou valeur\u00a0?'],
+    tips: 'Cat\u00e9gorisez\u00a0: co\u00fbts fixes (salaires, loyer), variables (d\u00e9placements, sous-traitance), semi-variables (marketing).',
+    placeholder: 'Ex: Salaires (70%)...\n\nBureaux et \u00e9quipement (15%)...\n\nMarketing (10%)...'
+  }
+];
+
+// --- State ---
+const state = {
+  step: 1,
+  view: 'wizard', // 'wizard' | 'review'
+  data: {},
+  aiMessages: {} // per-block chat history
+};
+STEPS.forEach(s => { state.data[s.key] = ''; state.aiMessages[s.key] = []; });
+
+// --- DOM refs ---
+const wizardEl = document.getElementById('wizard');
+const reviewEl = document.getElementById('review-screen');
+const stepContentEl = document.getElementById('step-content');
+const sidebarStepsEl = document.getElementById('sidebar-steps');
+const btnPrev = document.getElementById('btn-prev');
+const btnNext = document.getElementById('btn-next');
+const currentStepEl = document.getElementById('current-step');
+const mainContentEl = document.getElementById('main-content');
+
+// --- Sidebar ---
+function renderSidebar() {
+  sidebarStepsEl.innerHTML = STEPS.map((s, i) => {
+    const num = i + 1;
+    let cls = 'sb-item';
+    if (state.view === 'wizard' && num === state.step) cls += ' active';
+    else if (state.data[s.key].trim()) cls += ' completed';
+    return `<div class="${cls}" data-step="${num}">
+      <span class="sb-num">${num}</span>
+      <span class="sb-label">${s.title}</span>
+      <span class="sb-check">\u2713</span>
+    </div>`;
+  }).join('');
+
+  sidebarStepsEl.querySelectorAll('.sb-item').forEach(el => {
+    el.addEventListener('click', () => {
+      saveCurrentTextarea();
+      state.step = parseInt(el.dataset.step);
+      state.view = 'wizard';
+      render();
+      closeSidebarMobile();
+    });
+  });
+}
+
+// --- Render step ---
+function renderStep() {
+  const s = STEPS[state.step - 1];
+  const aiHistory = state.aiMessages[s.key];
+
+  stepContentEl.innerHTML = `
+    <div class="step-left">
+      <span class="step-number">\u00c9tape ${state.step} / 9</span>
+      <h2>${s.icon} ${s.title}</h2>
+      <p class="step-intro">${s.intro}</p>
+      <div class="questions-box">
+        <h3>Questions guides</h3>
+        <ul>${s.questions.map(q => `<li>${q}</li>`).join('')}</ul>
+      </div>
+      <div class="tips-box">
+        <h3>Conseil</h3>
+        <p>${s.tips}</p>
+      </div>
+    </div>
+    <div class="step-right">
+      <div class="form-panel">
+        <label for="ta-${s.key}">${s.title}</label>
+        <textarea id="ta-${s.key}" placeholder="${s.placeholder}" maxlength="1000">${state.data[s.key]}</textarea>
+        <div class="char-count"><span id="cc">${state.data[s.key].length}</span> / 1000</div>
+
+        <div class="ai-section">
+          <div class="ai-header">
+            <span>\u{1F916}</span>
+            <span>Assistant IA</span>
+          </div>
+          <div class="ai-messages" id="ai-messages">${aiHistory.map(m => renderAIMsg(m)).join('')}</div>
+          <div class="ai-input-row">
+            <input type="text" id="ai-input" placeholder="Posez une question..." />
+            <button id="ai-send">Envoyer</button>
+          </div>
+          <div class="ai-quick-actions">
+            <button class="ai-quick-btn" id="ai-suggest">\u{1F4A1} Sugg\u00e9rer du contenu</button>
+            <button class="ai-quick-btn" id="ai-improve">\u{270F}\uFE0F Am\u00e9liorer mon texte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Textarea events
+  const ta = document.getElementById('ta-' + s.key);
+  ta.addEventListener('input', () => {
+    state.data[s.key] = ta.value;
+    document.getElementById('cc').textContent = ta.value.length;
+  });
+
+  // Nav buttons
+  btnPrev.disabled = state.step === 1;
+  if (state.step === STEPS.length) {
+    btnNext.innerHTML = 'Voir mon canvas <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>';
+  } else {
+    btnNext.innerHTML = 'Suivant <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>';
+  }
+  currentStepEl.textContent = state.step;
+
+  // AI events
+  const aiInput = document.getElementById('ai-input');
+  const aiSend = document.getElementById('ai-send');
+  const aiSuggest = document.getElementById('ai-suggest');
+  const aiImprove = document.getElementById('ai-improve');
+
+  aiSend.addEventListener('click', () => {
+    const msg = aiInput.value.trim();
+    if (msg) sendAI('chat', msg);
+  });
+  aiInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiSend.click(); }
+  });
+  aiSuggest.addEventListener('click', () => sendAI('suggest'));
+  aiImprove.addEventListener('click', () => {
+    saveCurrentTextarea();
+    const text = state.data[s.key].trim();
+    if (!text) { alert('Entrez du texte d\u2019abord pour pouvoir l\u2019am\u00e9liorer.'); return; }
+    sendAI('improve');
+  });
+
+  scrollAIMessages();
+}
+
+function renderAIMsg(m) {
+  if (m.role === 'user') {
+    return `<div class="ai-msg ai-msg-user">${escapeHtml(m.content)}</div>`;
+  }
+  let html = `<div class="ai-msg ai-msg-assistant"><p>${escapeHtml(m.content)}</p>`;
+  if (m.usable) {
+    html += `<button class="ai-use-btn" onclick="insertSuggestion(this)" data-text="${escapeAttr(m.content)}">\u2713 Utiliser cette suggestion</button>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function scrollAIMessages() {
+  const el = document.getElementById('ai-messages');
+  if (el) el.scrollTop = el.scrollHeight;
+}
+
+// --- AI Communication ---
+let aiAbort = null;
+
+async function sendAI(mode, userMsg) {
+  const s = STEPS[state.step - 1];
+  saveCurrentTextarea();
+
+  // Build user message for display
+  let displayMsg = userMsg || '';
+  if (mode === 'suggest') displayMsg = '\u{1F4A1} Sugg\u00e8re du contenu pour cette section';
+  if (mode === 'improve') displayMsg = '\u270F\uFE0F Am\u00e9liore mon texte actuel';
+
+  state.aiMessages[s.key].push({ role: 'user', content: displayMsg });
+
+  // Re-render messages
+  const msgsEl = document.getElementById('ai-messages');
+  msgsEl.innerHTML = state.aiMessages[s.key].map(m => renderAIMsg(m)).join('');
+
+  // Add typing indicator
+  msgsEl.innerHTML += '<div class="ai-typing" id="ai-typing"><span></span><span></span><span></span></div>';
+  scrollAIMessages();
+
+  // Disable buttons during request
+  setAILoading(true);
+
+  const payload = {
+    messages: state.aiMessages[s.key].filter(m => m.role === 'user').slice(-5).map(m => ({ role: 'user', content: m.content })),
+    currentBlock: s.key,
+    currentBlockTitle: s.title,
+    currentText: state.data[s.key],
+    allData: { ...state.data },
+    mode: mode
+  };
+
+  try {
+    if (aiAbort) aiAbort.abort();
+    aiAbort = new AbortController();
+
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: aiAbort.signal
+    });
+
+    if (!res.ok) throw new Error('Erreur ' + res.status);
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let buffer = '';
+
+    // Remove typing indicator, add assistant bubble
+    const typingEl = document.getElementById('ai-typing');
+    if (typingEl) typingEl.remove();
+
+    const assistantBubble = document.createElement('div');
+    assistantBubble.className = 'ai-msg ai-msg-assistant';
+    assistantBubble.innerHTML = '<p></p>';
+    msgsEl.appendChild(assistantBubble);
+    const textEl = assistantBubble.querySelector('p');
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6).trim();
+          if (data === '[DONE]') break;
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.text) {
+              fullText += parsed.text;
+              textEl.innerHTML = escapeHtml(fullText);
+              scrollAIMessages();
+            }
+          } catch {}
+        }
+      }
+    }
+
+    // Save to state
+    const usable = mode === 'suggest' || mode === 'improve';
+    state.aiMessages[s.key].push({ role: 'assistant', content: fullText, usable });
+
+    // Add "Use" button if applicable
+    if (usable && fullText) {
+      const btn = document.createElement('button');
+      btn.className = 'ai-use-btn';
+      btn.textContent = '\u2713 Utiliser cette suggestion';
+      btn.dataset.text = fullText;
+      btn.onclick = function() { insertSuggestion(this); };
+      assistantBubble.appendChild(btn);
+    }
+
+  } catch (err) {
+    const typingEl = document.getElementById('ai-typing');
+    if (typingEl) typingEl.remove();
+    if (err.name !== 'AbortError') {
+      state.aiMessages[s.key].push({ role: 'assistant', content: 'D\u00e9sol\u00e9, une erreur est survenue. V\u00e9rifiez que le serveur est d\u00e9marr\u00e9 (vercel dev).', usable: false });
+      msgsEl.innerHTML = state.aiMessages[s.key].map(m => renderAIMsg(m)).join('');
+    }
+  }
+
+  setAILoading(false);
+  scrollAIMessages();
+}
+
+function setAILoading(loading) {
+  const btns = document.querySelectorAll('#ai-send, .ai-quick-btn');
+  btns.forEach(b => b.disabled = loading);
+}
+
+function insertSuggestion(btnEl) {
+  const text = btnEl.dataset.text;
+  const s = STEPS[state.step - 1];
+  const ta = document.getElementById('ta-' + s.key);
+  if (ta) {
+    ta.value = text;
+    state.data[s.key] = text;
+    document.getElementById('cc').textContent = text.length;
+    ta.focus();
+  }
+  btnEl.textContent = '\u2713 Ins\u00e9r\u00e9\u00a0!';
+  btnEl.disabled = true;
+}
+
+// --- Save & Render ---
+function saveCurrentTextarea() {
+  const s = STEPS[state.step - 1];
+  const ta = document.getElementById('ta-' + s.key);
+  if (ta) state.data[s.key] = ta.value;
+}
+
+function render() {
+  renderSidebar();
+  if (state.view === 'wizard') {
+    wizardEl.style.display = 'block';
+    reviewEl.style.display = 'none';
+    renderStep();
+  } else {
+    wizardEl.style.display = 'none';
+    reviewEl.style.display = 'block';
+    renderBMC();
+  }
+}
+
+// --- Navigation ---
+btnNext.addEventListener('click', () => {
+  saveCurrentTextarea();
+  if (state.step < STEPS.length) {
+    state.step++;
+    render();
+    mainContentEl.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showReview();
+  }
+});
+
+btnPrev.addEventListener('click', () => {
+  saveCurrentTextarea();
+  if (state.step > 1) {
+    state.step--;
+    render();
+    mainContentEl.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+// --- Review ---
+function showReview() {
+  saveCurrentTextarea();
+  state.view = 'review';
+  render();
+  mainContentEl.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderBMC() {
+  const grid = document.getElementById('bmc-grid');
+  grid.innerHTML = STEPS.map(s => {
+    const content = state.data[s.key].trim();
+    return `<div class="bmc-block ${s.gridClass}" data-key="${s.key}" title="Cliquer pour modifier">
+      <span class="block-icon">${s.icon}</span>
+      <h3>${s.title}</h3>
+      ${content ? `<p>${escapeHtml(content)}</p>` : '<p class="empty-hint">Non renseign\u00e9 \u2014 cliquez pour ajouter</p>'}
+      <div class="edit-hint">\u270e Modifier</div>
+    </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.bmc-block').forEach(block => {
+    block.addEventListener('click', () => {
+      state.step = STEPS.findIndex(s => s.key === block.dataset.key) + 1;
+      state.view = 'wizard';
+      render();
+      mainContentEl.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+document.getElementById('btn-back-wizard').addEventListener('click', () => {
+  state.view = 'wizard';
+  render();
+  mainContentEl.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+document.getElementById('sb-canvas').addEventListener('click', () => {
+  saveCurrentTextarea();
+  showReview();
+  closeSidebarMobile();
+});
+
+document.getElementById('btn-export').addEventListener('click', () => window.print());
+
+// --- Mobile sidebar ---
+const sidebarEl = document.getElementById('sidebar');
+const overlayEl = document.getElementById('sidebar-overlay');
+
+document.getElementById('sidebar-toggle').addEventListener('click', () => {
+  sidebarEl.classList.toggle('open');
+  overlayEl.classList.toggle('open');
+});
+overlayEl.addEventListener('click', closeSidebarMobile);
+
+function closeSidebarMobile() {
+  sidebarEl.classList.remove('open');
+  overlayEl.classList.remove('open');
+}
+
+// --- Helpers ---
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML.replace(/\n/g, '<br>');
+}
+function escapeAttr(str) {
+  return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// --- Init ---
+render();
+</script>
+
+</body>
+</html>
