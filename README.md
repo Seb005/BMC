@@ -41,16 +41,29 @@ BMC/
 - [x] **Responsive** : sidebar repliable avec hamburger ≤ 900px
 - [x] **Thème clair** : fond blanc, cartes `#f8fafc`, accent orange `#F97316`
 
-### 🔲 À faire
+### 🔲 Phase 2 — Mise en page, UX et look
+
+- [ ] Ajustements visuels (mise en page, espacement, typographie, couleurs)
+- [ ] Amélioration de l'expérience utilisateur (navigation, feedback, transitions)
+- [ ] Optimiser l'UX mobile (taille des textareas, scroll)
+
+### 🔲 Phase 3 — Déploiement
 
 - [ ] Déployer sur Vercel + configurer `ANTHROPIC_API_KEY` en variable d'environnement
 - [ ] Configurer le sous-domaine `bmc.kodra.ca` (CNAME → `cname.vercel-dns.com`)
-- [ ] Ajouter une carte dans le [labo-index](https://labo.kodra.ca)
-- [ ] Tester l'assistant IA en conditions réelles (vérifier le streaming, les suggestions)
 - [ ] Ajouter Google Analytics (`G-RE43BML4L2`)
-- [ ] Sauvegarde locale (localStorage) pour ne pas perdre les données au refresh
-- [ ] Import/export des données (JSON) pour partager ou reprendre un BMC
-- [ ] Optimiser l'UX mobile (taille des textareas, scroll)
+- [ ] Tester l'assistant IA en conditions réelles (vérifier le streaming, les suggestions)
+- [ ] Ajouter une carte dans le [labo-index](https://labo.kodra.ca)
+
+### 🔲 Phase 4 — Auth, sauvegarde et monétisation
+
+- [ ] Authentification avec Supabase (email/password ou magic link)
+- [ ] Sauvegarde des BMC dans Supabase (PostgreSQL) — plusieurs canvas par utilisateur
+- [ ] Dashboard : liste des BMC, créer/ouvrir/supprimer
+- [ ] Suivi de l'utilisation des tokens IA par utilisateur
+- [ ] Modèle freemium : version gratuite (sans IA) + abonnement Pro avec assistant IA
+- [ ] Facturation avec Stripe (abonnement mensuel ~5-10$)
+- [ ] Import/export des données (JSON/PDF)
 
 ## Développement local
 
