@@ -55,7 +55,16 @@ BMC/
 - [ ] Tester l'assistant IA en conditions réelles (vérifier le streaming, les suggestions)
 - [ ] Ajouter une carte dans le [labo-index](https://labo.kodra.ca)
 
-### 🔲 Phase 4 — Auth, sauvegarde et monétisation
+### 🔲 Phase 4 — Internationalisation (i18n)
+
+- [ ] 4 langues : Français, English, Español, Português
+- [ ] URLs séparées : `/fr`, `/en`, `/es`, `/pt` (meilleur pour le SEO)
+- [ ] Objet de traductions centralisé (`i18n`) : UI, contenu éducatif des 9 blocs, placeholders
+- [ ] Sélecteur de langue dans le header (drapeaux ou code langue)
+- [ ] Assistant IA multilingue : le system prompt s'adapte à la langue active
+- [ ] Détection automatique de la langue du navigateur (redirection initiale)
+
+### 🔲 Phase 5 — Auth, sauvegarde et monétisation
 
 - [ ] Authentification avec Supabase (email/password ou magic link)
 - [ ] Sauvegarde des BMC dans Supabase (PostgreSQL) — plusieurs canvas par utilisateur
