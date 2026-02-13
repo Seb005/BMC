@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { createClient } from '@supabase/supabase-js';
 
 // Rate limiting
 const rateMap = new Map();
@@ -30,7 +31,6 @@ const BLOCK_INFO = {
 };
 
 function buildSystemPrompt(currentBlock, currentBlockTitle, currentText, allData, mode) {
-  // Build context from other filled blocks
   const otherBlocks = Object.entries(allData)
     .filter(([key, val]) => key !== currentBlock && val && val.trim())
     .map(([key, val]) => `- ${BLOCK_INFO[key] || key} : ${val.trim().substring(0, 300)}`)
@@ -78,6 +78,52 @@ Règles :
 - Ne mentionne jamais que tu es un modèle IA ou Claude.`;
 }
 
+// --- Supabase JWT verification ---
+async function verifyUser(req) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+
+  const token = authHeader.slice(7);
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return null;
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) return null;
+  return user;
+}
+
+// --- Track AI usage ---
+async function trackUsage(userId, tokensIn, tokensOut) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey) return;
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+
+  const month = new Date().toISOString().slice(0, 7); // '2026-02'
+
+  await supabase.from('ai_usage').insert({
+    user_id: userId,
+    tool: 'bmc',
+    tokens_in: tokensIn,
+    tokens_out: tokensOut,
+    month
+  });
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -87,6 +133,12 @@ export default async function handler(req, res) {
   const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
   if (!checkRate(ip)) {
     return res.status(429).json({ error: 'Trop de requêtes. Réessayez dans une minute.' });
+  }
+
+  // Verify JWT — require authenticated user
+  const user = await verifyUser(req);
+  if (!user) {
+    return res.status(401).json({ error: 'Non authentifié. Veuillez vous connecter.' });
   }
 
   const { messages, currentBlock, currentBlockTitle, currentText, allData, mode } = req.body;
@@ -104,7 +156,6 @@ export default async function handler(req, res) {
 
   const systemPrompt = buildSystemPrompt(currentBlock, currentBlockTitle, currentText, allData || {}, mode);
 
-  // Keep last 5 messages
   const recentMessages = (messages || []).slice(-5).map(m => ({
     role: m.role || 'user',
     content: (m.content || '').substring(0, 1000)
@@ -123,13 +174,31 @@ export default async function handler(req, res) {
       messages: recentMessages
     });
 
+    let inputTokens = 0;
+    let outputTokens = 0;
+
     stream.on('text', (text) => {
       res.write(`data: ${JSON.stringify({ text })}\n\n`);
     });
 
-    stream.on('end', () => {
+    stream.on('message', (message) => {
+      // Capture token usage from the final message
+      if (message.usage) {
+        inputTokens = message.usage.input_tokens || 0;
+        outputTokens = message.usage.output_tokens || 0;
+      }
+    });
+
+    stream.on('end', async () => {
       res.write('data: [DONE]\n\n');
       res.end();
+
+      // Track usage asynchronously (don't block the response)
+      if (inputTokens || outputTokens) {
+        trackUsage(user.id, inputTokens, outputTokens).catch(err => {
+          console.error('Usage tracking error:', err);
+        });
+      }
     });
 
     stream.on('error', (err) => {

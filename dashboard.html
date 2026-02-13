@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mes Canvas | Outils Kodra</title>
+  <meta name="description" content="G&eacute;rez vos Business Model Canvas." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAFA;
+      --bg-card: #FFFFFF;
+      --bg-elevated: #FFFFFF;
+      --bg-hover: rgba(0,0,0,0.035);
+      --border: #E4E4E7;
+      --border-subtle: #F0F0F2;
+      --orange: #F97316;
+      --orange-hover: #EA580C;
+      --orange-light: rgba(249,115,22,0.07);
+      --orange-border: rgba(249,115,22,0.2);
+      --orange-glow: rgba(249,115,22,0.12);
+      --green: #16A34A;
+      --green-light: rgba(22,163,74,0.08);
+      --red: #DC2626;
+      --red-light: rgba(220,38,38,0.08);
+      --text: #18181B;
+      --text2: #52525B;
+      --muted: #A1A1AA;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration: 150ms;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px; line-height: 1.6;
+      min-height: 100vh; display: flex; flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* Header */
+    header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 52px;
+      display: flex; align-items: center;
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; max-width: 1200px; margin: 0 auto;
+    }
+    .logo-area { display: flex; align-items: center; gap: 12px; }
+    .logo-area img { height: 20px; opacity: 0.85; }
+    .divider { width: 1px; height: 16px; background: var(--border); }
+    .badge {
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .user-name { font-size: 13px; color: var(--text2); font-weight: 500; }
+    .btn-logout {
+      font-size: 12.5px; font-weight: 500; color: var(--muted);
+      background: none; border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 6px 14px; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: all var(--duration);
+    }
+    .btn-logout:hover { color: var(--text2); border-color: #D4D4D8; background: var(--bg-hover); }
+
+    /* Main */
+    .main {
+      flex: 1; max-width: 1200px; width: 100%;
+      margin: 0 auto; padding: 32px 24px 64px;
+    }
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
+    }
+    .page-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+
+    .btn-new {
+      display: flex; align-items: center; gap: 8px;
+      height: 38px; padding: 0 20px;
+      border: none; border-radius: var(--radius-md);
+      background: linear-gradient(180deg, var(--orange) 0%, var(--orange-hover) 100%);
+      color: #fff; font-family: 'Inter', sans-serif;
+      font-size: 13.5px; font-weight: 600; cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.15);
+      transition: all var(--duration);
+    }
+    .btn-new:hover {
+      box-shadow: 0 3px 8px rgba(249,115,22,0.25), inset 0 1px 0 rgba(255,255,255,0.12);
+      transform: translateY(-0.5px);
+    }
+    .btn-new:active { transform: translateY(0); }
+    .btn-new:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-new svg { width: 16px; height: 16px; }
+
+    /* Canvas grid */
+    .canvas-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .canvas-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px 22px;
+      cursor: pointer; transition: all var(--duration) var(--ease);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      position: relative;
+    }
+    .canvas-card:hover {
+      border-color: var(--orange);
+      box-shadow: 0 4px 16px var(--orange-glow);
+      transform: translateY(-2px);
+    }
+    .canvas-card-title {
+      font-size: 15px; font-weight: 600; margin-bottom: 6px;
+      letter-spacing: -0.01em; color: var(--text);
+    }
+    .canvas-card-date {
+      font-size: 12px; color: var(--muted); margin-bottom: 12px;
+    }
+    .canvas-card-preview {
+      font-size: 12.5px; color: var(--text2); line-height: 1.55;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .canvas-card-preview.empty {
+      color: var(--muted); font-style: italic;
+    }
+    .canvas-card-actions {
+      position: absolute; top: 12px; right: 12px;
+      display: flex; gap: 4px; opacity: 0;
+      transition: opacity var(--duration);
+    }
+    .canvas-card:hover .canvas-card-actions { opacity: 1; }
+    .btn-delete {
+      width: 28px; height: 28px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--bg-card);
+      color: var(--muted); cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: all var(--duration); font-size: 14px;
+    }
+    .btn-delete:hover {
+      color: var(--red); border-color: rgba(220,38,38,0.3);
+      background: var(--red-light);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 64px 24px;
+      background: var(--bg-card); border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-title {
+      font-size: 16px; font-weight: 600; margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    .empty-desc {
+      font-size: 13.5px; color: var(--muted); margin-bottom: 24px;
+      max-width: 360px; margin-left: auto; margin-right: auto;
+    }
+
+    /* Loading */
+    .loading-state {
+      text-align: center; padding: 48px; color: var(--muted);
+      font-size: 14px;
+    }
+    .spinner {
+      display: inline-block; width: 24px; height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--orange); border-radius: 50%;
+      animation: spin 0.7s linear infinite; margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Confirm dialog */
+    .dialog-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.25); z-index: 100;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .dialog-overlay.open { display: flex; }
+    .dialog {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 28px;
+      max-width: 400px; width: 90%;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      animation: dialogIn 200ms var(--ease);
+    }
+    @keyframes dialogIn {
+      from { opacity: 0; transform: scale(0.95) translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    .dialog h3 { font-size: 15px; font-weight: 650; margin-bottom: 8px; }
+    .dialog p { font-size: 13.5px; color: var(--text2); margin-bottom: 20px; }
+    .dialog-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .btn-cancel {
+      height: 36px; padding: 0 16px; border: 1px solid var(--border);
+      border-radius: var(--radius-md); background: var(--bg-card);
+      color: var(--text2); font-size: 13px; font-weight: 550; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: all var(--duration);
+    }
+    .btn-cancel:hover { background: var(--bg); border-color: #D4D4D8; }
+    .btn-confirm-delete {
+      height: 36px; padding: 0 16px; border: none;
+      border-radius: var(--radius-md); background: var(--red);
+      color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: all var(--duration);
+    }
+    .btn-confirm-delete:hover { background: #B91C1C; }
+
+    /* Footer */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border); padding: 0 24px; height: 48px;
+      display: flex; align-items: center;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; width: 100%;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .footer-inner p, .footer-links { font-size: 12px; color: var(--muted); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { transition: color var(--duration); }
+    .footer-links a:hover { color: var(--orange); }
+
+    @media (max-width: 500px) {
+      .page-header { flex-direction: column; align-items: stretch; }
+      .canvas-grid { grid-template-columns: 1fr; }
+      .main { padding: 20px 16px 48px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-area">
+      <img src="https://kodra.ca/logo.png" alt="Kodra" />
+      <div class="divider"></div>
+      <span class="badge">outils</span>
+    </div>
+    <div class="header-right">
+      <span class="user-name" id="user-name"></span>
+      <button class="btn-logout" id="btn-logout">D&eacute;connexion</button>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="page-header">
+    <h1 class="page-title">Mes Business Model Canvas</h1>
+    <button class="btn-new" id="btn-new">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+      Nouveau canvas
+    </button>
+  </div>
+
+  <div id="canvas-list">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement...</p>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirmation dialog -->
+<div class="dialog-overlay" id="dialog-overlay">
+  <div class="dialog">
+    <h3>Supprimer ce canvas ?</h3>
+    <p>Cette action est irr&eacute;versible. Le canvas et toutes ses donn&eacute;es seront d&eacute;finitivement supprim&eacute;s.</p>
+    <div class="dialog-actions">
+      <button class="btn-cancel" id="btn-dialog-cancel">Annuler</button>
+      <button class="btn-confirm-delete" id="btn-dialog-confirm">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <p>&copy; 2026 Kodra Conseil, SENC</p>
+    <div class="footer-links">
+      <a href="https://kodra.ca">www.kodra.ca</a>
+      <span style="color:var(--border)">|</span>
+      <a href="mailto:seb@kodra.ca">seb@kodra.ca</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script>
+// ============================================================
+// Dashboard — Mes Business Model Canvas
+// ============================================================
+
+let currentUser = null;
+let canvases = [];
+let deleteTargetId = null;
+
+// --- Init ---
+(async () => {
+  currentUser = await requireAuth();
+  if (!currentUser) return;
+
+  // Display user name
+  const profile = currentUser.user_metadata;
+  const name = profile?.full_name || currentUser.email;
+  document.getElementById('user-name').textContent = name;
+
+  await loadCanvases();
+})();
+
+// --- Logout ---
+document.getElementById('btn-logout').addEventListener('click', () => signOut());
+
+// --- New canvas ---
+document.getElementById('btn-new').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-new');
+  btn.disabled = true;
+
+  const { data, error } = await supabase
+    .from('bmc_canvases')
+    .insert({
+      user_id: currentUser.id,
+      title: 'Mon Business Model Canvas',
+      data: {}
+    })
+    .select()
+    .single();
+
+  if (error) {
+    alert('Erreur lors de la cr\u00e9ation : ' + error.message);
+    btn.disabled = false;
+    return;
+  }
+
+  window.location.href = '/app.html?id=' + data.id;
+});
+
+// --- Load canvases ---
+async function loadCanvases() {
+  const listEl = document.getElementById('canvas-list');
+
+  const { data, error } = await supabase
+    .from('bmc_canvases')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('updated_at', { ascending: false });
+
+  if (error) {
+    listEl.innerHTML = '<p style="color:var(--red);padding:24px;">Erreur : ' + error.message + '</p>';
+    return;
+  }
+
+  canvases = data || [];
+  renderCanvases();
+}
+
+function renderCanvases() {
+  const listEl = document.getElementById('canvas-list');
+
+  if (canvases.length === 0) {
+    listEl.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">\u{1F4CB}</div>
+        <h2 class="empty-title">Aucun canvas</h2>
+        <p class="empty-desc">Cr\u00e9ez votre premier Business Model Canvas pour commencer \u00e0 structurer votre mod\u00e8le d'affaires.</p>
+        <button class="btn-new" onclick="document.getElementById('btn-new').click()">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          Cr\u00e9er un canvas
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  listEl.innerHTML = '<div class="canvas-grid">' + canvases.map(c => {
+    const preview = getPreview(c.data);
+    const date = formatDate(c.updated_at || c.created_at);
+    return `
+      <div class="canvas-card" data-id="${c.id}">
+        <div class="canvas-card-actions">
+          <button class="btn-delete" data-id="${c.id}" title="Supprimer">&#10005;</button>
+        </div>
+        <div class="canvas-card-title">${escapeHtml(c.title)}</div>
+        <div class="canvas-card-date">Modifi\u00e9 ${date}</div>
+        <div class="canvas-card-preview ${preview ? '' : 'empty'}">${preview || 'Aucun contenu encore'}</div>
+      </div>
+    `;
+  }).join('') + '</div>';
+
+  // Click to open
+  listEl.querySelectorAll('.canvas-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Don't navigate if delete button clicked
+      if (e.target.closest('.btn-delete')) return;
+      window.location.href = '/app.html?id=' + card.dataset.id;
+    });
+  });
+
+  // Delete buttons
+  listEl.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteTargetId = btn.dataset.id;
+      document.getElementById('dialog-overlay').classList.add('open');
+    });
+  });
+}
+
+// --- Delete dialog ---
+document.getElementById('btn-dialog-cancel').addEventListener('click', () => {
+  document.getElementById('dialog-overlay').classList.remove('open');
+  deleteTargetId = null;
+});
+document.getElementById('dialog-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    e.currentTarget.classList.remove('open');
+    deleteTargetId = null;
+  }
+});
+document.getElementById('btn-dialog-confirm').addEventListener('click', async () => {
+  if (!deleteTargetId) return;
+
+  const { error } = await supabase
+    .from('bmc_canvases')
+    .delete()
+    .eq('id', deleteTargetId)
+    .eq('user_id', currentUser.id);
+
+  document.getElementById('dialog-overlay').classList.remove('open');
+
+  if (error) {
+    alert('Erreur : ' + error.message);
+  } else {
+    canvases = canvases.filter(c => c.id !== deleteTargetId);
+    renderCanvases();
+  }
+
+  deleteTargetId = null;
+});
+
+// --- Helpers ---
+function getPreview(data) {
+  if (!data || typeof data !== 'object') return '';
+  const keys = ['proposition', 'segments', 'revenus', 'activites', 'canaux'];
+  for (const k of keys) {
+    if (data[k] && data[k].trim()) {
+      return escapeHtml(data[k].trim().substring(0, 150));
+    }
+  }
+  return '';
+}
+
+function formatDate(isoStr) {
+  if (!isoStr) return '';
+  const d = new Date(isoStr);
+  const now = new Date();
+  const diff = now - d;
+
+  // Less than 1 minute
+  if (diff < 60000) return '\u00e0 l\u2019instant';
+  // Less than 1 hour
+  if (diff < 3600000) return 'il y a ' + Math.floor(diff / 60000) + ' min';
+  // Less than 24 hours
+  if (diff < 86400000) return 'il y a ' + Math.floor(diff / 3600000) + 'h';
+  // Less than 7 days
+  if (diff < 604800000) return 'il y a ' + Math.floor(diff / 86400000) + ' j';
+
+  return d.toLocaleDateString('fr-CA', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+</script>
+
+</body>
+</html>
