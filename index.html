@@ -384,6 +384,28 @@
     }
     .ai-quick-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
+    /* AI — Coming soon / Dev notice */
+    .ai-coming-soon {
+      font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--orange);
+      background: var(--orange-light); border: 1px solid var(--orange-border);
+      border-radius: 999px; padding: 2px 10px;
+    }
+    .ai-dev-notice {
+      text-align: center; padding: 24px 16px;
+      background: var(--bg); border: 1px dashed var(--border);
+      border-radius: var(--radius-md);
+    }
+    .ai-dev-icon { font-size: 28px; margin-bottom: 10px; }
+    .ai-dev-title {
+      font-size: 13.5px; font-weight: 600; color: var(--text);
+      margin-bottom: 6px; letter-spacing: -0.01em;
+    }
+    .ai-dev-desc {
+      font-size: 13px; color: var(--muted); line-height: 1.6;
+      max-width: 320px; margin: 0 auto;
+    }
+
     /* === Nav Buttons === */
     .nav-buttons {
       display: flex; align-items: center; justify-content: space-between;
@@ -780,17 +802,12 @@ function renderStep() {
               <span>\u{2728}</span>
               <span>Assistant IA</span>
             </div>
+            <span class="ai-coming-soon">Bient\u00f4t disponible</span>
           </div>
-          <div class="ai-messages" id="ai-messages">${aiHistory.map(m => renderAIMsg(m)).join('')}</div>
-          <div class="ai-input-wrapper">
-            <input type="text" id="ai-input" placeholder="Posez une question\u2026" />
-            <button class="ai-send-btn" id="ai-send" title="Envoyer">
-              <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
-            </button>
-          </div>
-          <div class="ai-quick-actions">
-            <button class="ai-quick-btn" id="ai-suggest">\u{1F4A1} Sugg\u00e9rer du contenu</button>
-            <button class="ai-quick-btn" id="ai-improve">\u{270F}\uFE0F Am\u00e9liorer mon texte</button>
+          <div class="ai-dev-notice">
+            <div class="ai-dev-icon">\u{1F6A7}</div>
+            <p class="ai-dev-title">Fonctionnalit\u00e9 en d\u00e9veloppement</p>
+            <p class="ai-dev-desc">L\u2019assistant IA pourra bient\u00f4t vous aider \u00e0 r\u00e9diger et am\u00e9liorer chaque section de votre Business Model Canvas. Restez \u00e0 l\u2019aff\u00fbt\u00a0!</p>
           </div>
         </div>
       </div>
@@ -813,28 +830,8 @@ function renderStep() {
   }
   currentStepEl.textContent = state.step;
 
-  // AI events
-  const aiInput = document.getElementById('ai-input');
-  const aiSend = document.getElementById('ai-send');
-  const aiSuggest = document.getElementById('ai-suggest');
-  const aiImprove = document.getElementById('ai-improve');
-
-  aiSend.addEventListener('click', () => {
-    const msg = aiInput.value.trim();
-    if (msg) sendAI('chat', msg);
-  });
-  aiInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiSend.click(); }
-  });
-  aiSuggest.addEventListener('click', () => sendAI('suggest'));
-  aiImprove.addEventListener('click', () => {
-    saveCurrentTextarea();
-    const text = state.data[s.key].trim();
-    if (!text) { alert('Entrez du texte d\u2019abord pour pouvoir l\u2019am\u00e9liorer.'); return; }
-    sendAI('improve');
-  });
-
-  scrollAIMessages();
+  // AI events — disabled for now (feature in development)
+  // Will be re-enabled when the AI backend is connected
 }
 
 function renderAIMsg(m) {
