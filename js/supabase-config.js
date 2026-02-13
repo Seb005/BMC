@@ -6,7 +6,8 @@ const SUPABASE_URL = 'https://fenlyuelafsvtdhznufi.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlbmx5dWVsYWZzdnRkaHpudWZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MzcyMjcsImV4cCI6MjA4NjUxMzIyN30.LPmtz9YeGFJhCdwEHhJNh-Vi0zFE7NEmsTYBargb5fM';
 
 // Init Supabase client (loaded via CDN: @supabase/supabase-js@2)
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Use 'supabaseClient' to avoid conflict with CDN's window.supabase namespace
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // --- Auth Helpers ---
 
@@ -14,7 +15,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  * Get the current authenticated user, or null.
  */
 async function getUser() {
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await supabaseClient.auth.getUser();
   return user;
 }
 
@@ -22,7 +23,7 @@ async function getUser() {
  * Get the current session (includes access_token).
  */
 async function getSession() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   return session;
 }
 
@@ -43,7 +44,7 @@ async function requireAuth() {
  * Sign out and redirect to login page.
  */
 async function signOut() {
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
   window.location.href = '/';
 }
 
@@ -51,7 +52,7 @@ async function signOut() {
  * Sign in with email + password.
  */
 async function signInWithPassword(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   return { data, error };
 }
 
@@ -59,7 +60,7 @@ async function signInWithPassword(email, password) {
  * Sign up with email + password.
  */
 async function signUpWithPassword(email, password, fullName) {
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabaseClient.auth.signUp({
     email,
     password,
     options: {
@@ -73,7 +74,7 @@ async function signUpWithPassword(email, password, fullName) {
  * Send a magic link to the email.
  */
 async function signInWithMagicLink(email) {
-  const { data, error } = await supabase.auth.signInWithOtp({
+  const { data, error } = await supabaseClient.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: window.location.origin + '/dashboard.html'

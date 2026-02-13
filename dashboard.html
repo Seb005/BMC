@@ -330,7 +330,7 @@ document.getElementById('btn-new').addEventListener('click', async () => {
   const btn = document.getElementById('btn-new');
   btn.disabled = true;
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from('bmc_canvases')
     .insert({
       user_id: currentUser.id,
@@ -353,7 +353,7 @@ document.getElementById('btn-new').addEventListener('click', async () => {
 async function loadCanvases() {
   const listEl = document.getElementById('canvas-list');
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from('bmc_canvases')
     .select('*')
     .eq('user_id', currentUser.id)
@@ -434,7 +434,7 @@ document.getElementById('dialog-overlay').addEventListener('click', (e) => {
 document.getElementById('btn-dialog-confirm').addEventListener('click', async () => {
   if (!deleteTargetId) return;
 
-  const { error } = await supabase
+  const { error } = await supabaseClient
     .from('bmc_canvases')
     .delete()
     .eq('id', deleteTargetId)
